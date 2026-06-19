@@ -1,65 +1,143 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { translations } from "@/i18n/translations";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { useState } from "react";
+
+export default function HomePage() {
+  const router = useRouter();
+  const { lang, setLang } = useLanguage();
+  const [open, setOpen] = useState(false);
+
+  const t = translations[lang];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+
+      {/* NAVBAR */}
+      <nav className="flex justify-between items-center px-4 md:px-8 py-3 max-w-7xl mx-auto">
+        
+        <h1 className="text-lg md:text-xl font-bold">
+          🚦 Traffic System
+        </h1>
+
+        {/* RIGHT SIDE */}
+        <div className="flex items-center gap-3 relative">
+
+          {/* LANGUAGE BUTTON */}
+          <div className="relative">
+            <button
+              onClick={() => setOpen(!open)}
+              className="px-3 py-2 text-sm md:text-base border rounded-lg hover:bg-gray-100"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+              🌐 LANGUAGES
+            </button>
+
+            {/* DROPDOWN */}
+            {open && (
+              <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-xl border w-44 z-50">
+
+                {["EN", "FR", "RW"].map((l) => (
+                  <button
+                    key={l}
+                    onClick={() => {
+                      setLang(l as any);   // instant switch
+                      setOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${
+                      lang === l ? "bg-blue-100 font-semibold" : ""
+                    }`}
+                  >
+                    {l === "EN" && "English"}
+                    {l === "FR" && "Français"}
+                    {l === "RW" && "Kinyarwanda"}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* LOGIN */}
+          <button
+            onClick={() => router.push("/auth/login")}
+            className="px-3 py-2 text-sm md:text-base border rounded-lg hover:bg-gray-100"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            {t.login}
+          </button>
         </div>
-      </main>
-    </div>
+      </nav>
+
+      {/* HERO */}
+      <section className="text-center mt-12 px-4">
+
+        <motion.h2
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-2xl md:text-4xl font-bold"
+        >
+          {t.title}
+        </motion.h2>
+
+        <motion.h3
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-lg md:text-xl text-blue-600 mt-2"
+        >
+          {t.subtitle}
+        </motion.h3>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mt-4 text-sm md:text-base text-gray-600 max-w-lg mx-auto"
+        >
+          {t.description}
+        </motion.p>
+
+        <motion.div
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          className="mt-6 flex flex-col md:flex-row gap-3 justify-center"
+        >
+          <button
+            onClick={() => router.push("/auth/signup")}
+            className="bg-blue-600 text-white px-6 py-3 text-sm md:text-base rounded-xl hover:bg-blue-700"
+          >
+            🚀 {t.getStarted}
+          </button>
+
+          <button
+            onClick={() => router.push("/auth/login")}
+            className="border px-6 py-3 text-sm md:text-base rounded-xl hover:bg-gray-100"
+          >
+            {t.login}
+          </button>
+        </motion.div>
+      </section>
+
+      {/* FEATURES */}
+      <section className="mt-14 grid md:grid-cols-3 gap-4 px-4 max-w-5xl mx-auto">
+
+        {[t.learn, t.test, t.track].map((item, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="bg-white p-4 rounded-xl shadow hover:shadow-md transition"
+          >
+            <h3 className="text-base md:text-lg font-semibold mb-2">
+              {item}
+            </h3>
+
+            <p className="text-sm text-gray-600">
+              {(t as any).featureDesc || "Learn traffic rules step by step"}
+            </p>
+
+          </motion.div>
+        ))}
+      </section>
+    </main>
   );
 }

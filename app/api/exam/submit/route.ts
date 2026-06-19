@@ -5,7 +5,20 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { userId, score, total, answers } = body;
+    const {
+      userId,
+      score,
+      total,
+      answers,
+    }: {
+      userId: number | string;
+      score: number;
+      total: number;
+      answers: {
+        questionId: number;
+        optionId: number;
+      }[];
+    } = body;
 
     // 1. Create result first
     const result = await prisma.result.create({
@@ -16,9 +29,9 @@ export async function POST(req: Request) {
       },
     });
 
-    // 2. Then create answers linked to resultId
+    // 2. Create answers
     await prisma.userAnswer.createMany({
-      data: answers.map((a: any) => ({
+      data: answers.map((a) => ({
         resultId: result.id,
         questionId: a.questionId,
         optionId: a.optionId,
@@ -29,7 +42,6 @@ export async function POST(req: Request) {
       success: true,
       resultId: result.id,
     });
-
   } catch (error) {
     console.error("EXAM SUBMIT ERROR:", error);
 

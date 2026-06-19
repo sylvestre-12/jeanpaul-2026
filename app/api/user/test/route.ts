@@ -29,7 +29,9 @@ export async function GET() {
 
     const finalQuestions = selectedQuestions.map((question) => ({
       ...question,
-      options: [...question.options].sort(() => Math.random() - 0.5),
+      options: [...question.options].sort(
+        (a: any, b: any) => Math.random() - 0.5
+      ),
     }));
 
     return NextResponse.json(finalQuestions);

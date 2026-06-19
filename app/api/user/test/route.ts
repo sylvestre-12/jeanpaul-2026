@@ -6,7 +6,6 @@ import { prisma } from "@/lib/prisma";
 // ======================================================
 export async function GET() {
   try {
-    // FETCH QUESTIONS
     const allQuestions = await prisma.question.findMany({
       where: {
         deleted: false,
@@ -22,15 +21,12 @@ export async function GET() {
       },
     });
 
-    // RANDOMIZE QUESTIONS
     const shuffledQuestions = [...allQuestions].sort(
       () => Math.random() - 0.5
     );
 
-    // TAKE 20 QUESTIONS
     const selectedQuestions = shuffledQuestions.slice(0, 20);
 
-    // RANDOMIZE OPTIONS
     const finalQuestions = selectedQuestions.map((question) => ({
       ...question,
       options: [...question.options].sort(() => Math.random() - 0.5),
@@ -60,7 +56,6 @@ export async function POST(req: Request) {
     const userId = Number(body.userId);
     const answers = body.answers;
 
-    // VALIDATION
     if (!userId || isNaN(userId)) {
       return NextResponse.json(
         { success: false, error: "Valid User ID is required" },
@@ -77,7 +72,6 @@ export async function POST(req: Request) {
 
     let score = 0;
 
-    // CHECK ANSWERS
     for (const answer of answers) {
       const questionId = Number(answer.questionId);
       const optionId = Number(answer.optionId);
@@ -94,7 +88,7 @@ export async function POST(req: Request) {
       if (!question) continue;
 
       const correctOption = question.options.find(
-        (option) => option.isCorrect
+        (option: any) => option.isCorrect
       );
 
       if (correctOption && correctOption.id === optionId) {
@@ -104,7 +98,6 @@ export async function POST(req: Request) {
 
     const total = answers.length;
 
-    // SAVE RESULT
     const result = await prisma.result.create({
       data: {
         userId,
@@ -113,7 +106,6 @@ export async function POST(req: Request) {
       },
     });
 
-    // SAVE USER ANSWERS
     await prisma.userAnswer.createMany({
       data: answers.map((answer: any) => ({
         resultId: result.id,
@@ -124,7 +116,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: score >= 12 ? "Congratulations" : 
+      message: score >= 12 ? "Congratulations" : "Completed",
       score,
       total,
       passed: score >= 12,

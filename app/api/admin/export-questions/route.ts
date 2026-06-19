@@ -16,12 +16,12 @@ export async function GET() {
       orderBy: { number: "asc" },
     });
 
-    const safeQuestions = questions.map((q) => ({
+    const safeQuestions = questions.map((q: any) => ({
       id: q.id,
       number: q.number,
       image: q.image,
       translations: q.translations,
-      options: q.options.map((o) => ({
+      options: q.options.map((o: any) => ({
         id: o.id,
         translations: o.translations,
       })),
@@ -29,6 +29,8 @@ export async function GET() {
 
     return NextResponse.json(safeQuestions);
   } catch (err) {
+    console.error(err);
+
     return NextResponse.json(
       { error: "Failed to load questions" },
       { status: 500 }

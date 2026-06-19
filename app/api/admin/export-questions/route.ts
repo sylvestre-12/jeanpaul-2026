@@ -16,7 +16,6 @@ export async function GET() {
       orderBy: { number: "asc" },
     });
 
-    // REMOVE correct answer before sending
     const safeQuestions = questions.map((q) => ({
       id: q.id,
       number: q.number,

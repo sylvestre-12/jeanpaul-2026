@@ -22,7 +22,7 @@ model User {
   history       LoginHistory[]
   otps          OTP[]
   results       Result[]
-  testQuestions TestQuestion[]
+  
 }
 
 model OTP {
@@ -45,8 +45,9 @@ model Question {
   images        QuestionImage[]
   translations  QuestionTranslation[]
   userAnswers   UserAnswer[]
-  tests         Test[]                @relation("TestQuestions")
-  testQuestions TestQuestion[]
+  tests         Test[] @relation("TestQuestions")
+  
+  
 }
 
 model QuestionTranslation {
@@ -133,25 +134,4 @@ enum Language {
 enum QuestionType {
   NORMAL
   SHORT
-}
-
-model TestQuestion {
-  id Int @id @default(autoincrement())
-
-  assignmentId Int
-  questionId   Int
-  userId       Int? // optional if sending to user later
-
-  assignment TestAssignment @relation(fields: [assignmentId], references: [id])
-  question   Question       @relation(fields: [questionId], references: [id])
-  user       User?          @relation(fields: [userId], references: [id])
-}
-
-model TestAssignment {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  language  String?
-  createdAt DateTime @default(now())
-
-  questions TestQuestion[]
 }

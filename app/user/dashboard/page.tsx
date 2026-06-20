@@ -102,7 +102,7 @@ export default function UserDashboard() {
           desc={t.downloadReportsDesc}
           icon="📥"
           color="bg-orange-600 hover:bg-orange-700"
-          onClick={() => router.push("/user/download")}
+          onClick={() => router.push("/user/history")}
         />
 
       </div>

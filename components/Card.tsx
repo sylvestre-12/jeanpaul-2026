@@ -1,29 +1,67 @@
 "use client";
 
 import { ReactNode } from "react";
+import clsx from "clsx";
 
 interface CardProps {
   title?: string;
   children: ReactNode;
   footer?: ReactNode;
+  className?: string;
 }
 
-export default function Card({ title, children, footer }: CardProps) {
+export default function Card({
+  title,
+  children,
+  footer,
+  className,
+}: CardProps) {
   return (
-    <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-md hover:shadow-lg transition p-5">
+    <div
+      className={clsx(
+        // Base (mobile friendly + eye comfort)
+        "bg-white/90 backdrop-blur-md",
+        "rounded-2xl shadow-sm hover:shadow-md transition",
+        "p-4 sm:p-5 md:p-6",
+        "border border-gray-100",
+        "text-gray-900",
 
+        className
+      )}
+    >
+      {/* TITLE */}
       {title && (
-        <h3 className="text-lg md:text-xl font-bold mb-3 text-gray-800">
+        <h3
+          className={clsx(
+            "font-semibold text-gray-900",
+            "mb-3",
+            "text-base sm:text-lg md:text-xl",
+            "leading-snug"
+          )}
+        >
           {title}
         </h3>
       )}
 
-      <div className="text-gray-600 text-sm md:text-base">
+      {/* CONTENT */}
+      <div
+        className={clsx(
+          "text-gray-700",
+          "text-sm sm:text-base",
+          "leading-6 sm:leading-7"
+        )}
+      >
         {children}
       </div>
 
+      {/* FOOTER */}
       {footer && (
-        <div className="mt-4 border-t pt-3">
+        <div
+          className={clsx(
+            "mt-4 pt-3 border-t border-gray-100",
+            "text-sm text-gray-600"
+          )}
+        >
           {footer}
         </div>
       )}

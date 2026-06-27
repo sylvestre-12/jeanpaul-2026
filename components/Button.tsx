@@ -13,36 +13,58 @@ export default function Button({
   children,
   variant = "primary",
   size = "md",
-  loading,
+  loading = false,
   className,
+  disabled,
   ...props
 }: ButtonProps) {
+  const isDisabled = loading || disabled;
+
   return (
     <button
       {...props}
-      disabled={loading || props.disabled}
+      disabled={isDisabled}
+      aria-busy={loading}
       className={clsx(
-        "rounded-xl font-semibold transition focus:outline-none focus:ring-2",
-        
-        // SIZE
+        // Base (mobile friendly + accessibility)
+        "rounded-xl font-semibold transition",
+        "focus:outline-none focus:ring-2 focus:ring-offset-2",
+        "disabled:opacity-50 disabled:cursor-not-allowed",
+        "min-h-[44px] flex items-center justify-center", // 👈 better for small devices/touch
+
+        // SIZE (touch-friendly spacing)
         {
           "px-3 py-2 text-sm": size === "sm",
           "px-5 py-3 text-base": size === "md",
           "px-6 py-4 text-lg": size === "lg",
         },
 
-        // VARIANT
+        // VARIANTS (improved contrast for eye comfort)
         {
-          "bg-blue-600 text-white hover:bg-blue-700": variant === "primary",
-          "bg-gray-200 hover:bg-gray-300": variant === "secondary",
-          "bg-red-500 text-white hover:bg-red-600": variant === "danger",
-          "border hover:bg-gray-100": variant === "outline",
+          "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-400":
+            variant === "primary",
+
+          "bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-400":
+            variant === "secondary",
+
+          "bg-red-500 text-white hover:bg-red-600 focus:ring-red-400":
+            variant === "danger",
+
+          "border border-gray-300 text-gray-800 hover:bg-gray-100 focus:ring-gray-300":
+            variant === "outline",
         },
 
         className
       )}
     >
-      {loading ? "Loading..." : children}
+      {loading ? (
+        <span className="flex items-center gap-2">
+          <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+          Loading...
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 }

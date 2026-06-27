@@ -1,53 +1,103 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { translations } from "@/i18n/translations";
-import { useLanguage } from "@/i18n/LanguageProvider";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { translations } from "@/i18n/translations";
+import { LANG_KEY } from "@/lib/language";
 
-export default function HomePage() {
+type Lang = "EN" | "FR" | "RW";
+
+export default function LoginPage() {
   const router = useRouter();
   const { lang, setLang } = useLanguage();
-  const [open, setOpen] = useState(false);
 
-  const t = translations[lang];
+  const safeLang: Lang = (lang as Lang) || "EN";
+  const t = translations[safeLang] || translations.EN;
+
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogin() {
+    if (!phone || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, password }),
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      await setLang(lang);
+
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("userName", data.name || "");
+      localStorage.setItem("userPhone", data.phone || "");
+      localStorage.setItem("app_lang", lang);
+      localStorage.setItem(LANG_KEY, lang);
+
+      router.push(
+        data.redirect === "/user/dashboard"
+          ? "/user/dashboard"
+          : "/auth/otp"
+      );
+    } catch (err) {
+      alert("Server error");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 px-3 sm:px-4">
 
-      {/* NAVBAR */}
-      <nav className="flex justify-between items-center px-4 md:px-8 py-3 max-w-7xl mx-auto">
-        
-        <h1 className="text-base md:text-xl font-bold">
-          🚦 Traffic System
-        </h1>
+      {/* CARD */}
+      <div className="w-full max-w-sm sm:max-w-md bg-white rounded-2xl shadow-xl p-5 sm:p-6">
 
-        <div className="flex items-center gap-2 md:gap-3 relative">
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-6">
 
-          {/* LANGUAGE BUTTON */}
+          {/* BACK */}
+          <button
+            onClick={() => router.push("/")}
+            className="text-sm sm:text-base px-3 py-1 rounded-lg border hover:bg-gray-100 transition"
+          >
+            ← Back
+          </button>
+
+          {/* LANGUAGE */}
           <div className="relative">
             <button
               onClick={() => setOpen(!open)}
-              className="px-3 py-2 text-xs md:text-base border rounded-lg hover:bg-gray-100"
+              className="text-sm px-3 py-1 rounded-lg border hover:bg-gray-100"
             >
-              🌐 LANGUAGES
+              🌍 {safeLang}
             </button>
 
-            {/* DROPDOWN */}
             {open && (
-              <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-xl border w-40 md:w-44 z-50">
-
-                {["EN", "FR", "RW"].map((l) => (
+              <div className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg z-50">
+                {(["EN", "FR", "RW"] as Lang[]).map((l) => (
                   <button
                     key={l}
                     onClick={() => {
-                      setLang(l as any);
+                      setLang(l);
                       setOpen(false);
                     }}
-                    className={`w-full text-left px-3 md:px-4 py-2 text-xs md:text-sm hover:bg-gray-100 ${
-                      lang === l ? "bg-blue-100 font-semibold" : ""
-                    }`}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                   >
                     {l === "EN" && "English"}
                     {l === "FR" && "Français"}
@@ -57,87 +107,61 @@ export default function HomePage() {
               </div>
             )}
           </div>
+        </div>
 
-          {/* LOGIN */}
+        {/* TITLE */}
+        <h1 className="text-xl sm:text-2xl font-bold text-center mb-6 text-gray-800">
+          {t.login || "Login"}
+        </h1>
+
+        {/* FORM */}
+        <div className="space-y-4">
+
+          <input
+            className="w-full p-3 sm:p-4 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base"
+            placeholder="Phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+
+          <input
+            className="w-full p-3 sm:p-4 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base"
+            type="password"
+            placeholder={t.password || "Password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
           <button
-            onClick={() => router.push("/auth/login")}
-            className="px-3 py-2 text-xs md:text-base border rounded-lg hover:bg-gray-100"
+            onClick={handleLogin}
+            disabled={loading}
+            className={`w-full p-3 sm:p-4 rounded-xl font-semibold text-white transition
+              ${loading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"}`}
           >
-            {t.login}
+            {loading ? "Logging in..." : t.login || "Login"}
           </button>
         </div>
-      </nav>
 
-      {/* HERO */}
-      <section className="text-center mt-8 md:mt-12 px-4">
+        {/* LINKS */}
+        <div className="flex justify-between mt-5 text-sm">
 
-        <motion.h2
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-xl md:text-4xl font-bold leading-snug"
-        >
-          {t.title}
-        </motion.h2>
+          <button
+            onClick={() => router.push("/auth/forgot-password")}
+            className="text-blue-600 hover:underline"
+          >
+            {t.forgotPassword || "Forgot Password?"}
+          </button>
 
-        <motion.h3
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-base md:text-xl text-blue-600 mt-2"
-        >
-          {t.subtitle}
-        </motion.h3>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mt-4 text-sm md:text-base text-gray-600 max-w-lg mx-auto leading-relaxed"
-        >
-          {t.description}
-        </motion.p>
-
-        <motion.div
-          initial={{ scale: 0.95 }}
-          animate={{ scale: 1 }}
-          className="mt-6 flex flex-col md:flex-row gap-3 justify-center"
-        >
           <button
             onClick={() => router.push("/auth/signup")}
-            className="bg-blue-600 text-white px-6 py-3 text-sm md:text-base rounded-xl hover:bg-blue-700"
+            className="text-green-600 hover:underline"
           >
-            🚀 {t.getStarted}
+            {t.signup || "Sign Up"}
           </button>
 
-          <button
-            onClick={() => router.push("/auth/login")}
-            className="border px-6 py-3 text-sm md:text-base rounded-xl hover:bg-gray-100"
-          >
-            {t.login}
-          </button>
-        </motion.div>
-      </section>
+        </div>
 
-      {/* FEATURES (FIXED FOR SMALL DEVICES, NOT REMOVED) */}
-      <section className="mt-10 md:mt-14 grid grid-cols-1 md:grid-cols-3 gap-4 px-4 max-w-5xl mx-auto">
-
-        {[t.learn, t.test, t.track].map((item, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}  // improves mobile performance
-            className="bg-white p-4 rounded-xl shadow hover:shadow-md transition"
-          >
-            <h3 className="text-base md:text-lg font-semibold mb-2">
-              {item}
-            </h3>
-
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {(t as any).featureDesc || "Learn traffic rules step by step"}
-            </p>
-          </motion.div>
-        ))}
-
-      </section>
+      </div>
     </main>
   );
 }

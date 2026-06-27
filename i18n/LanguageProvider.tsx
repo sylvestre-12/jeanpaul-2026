@@ -5,6 +5,7 @@ import React, {
   useContext,
   useEffect,
   useState,
+  useCallback,
 } from "react";
 
 import {
@@ -20,10 +21,9 @@ type ContextType = {
   setLang: (l: Lang) => Promise<void>;
 };
 
-const LanguageContext = createContext<ContextType>({
-  lang: "EN",
-  setLang: async () => {},
-});
+const LanguageContext = createContext<ContextType | undefined>(
+  undefined
+);
 
 export function LanguageProvider({
   children,
@@ -33,36 +33,46 @@ export function LanguageProvider({
   const [lang, setLangState] = useState<Lang>("EN");
   const [ready, setReady] = useState(false);
 
+  // Load language safely (client-only + SSR safe)
   useEffect(() => {
-    const stored =
-      localStorage.getItem("app_lang") ||
-      localStorage.getItem(LANG_KEY) ||
-      getStoredLanguage();
+    try {
+      const stored =
+        typeof window !== "undefined"
+          ? localStorage.getItem("app_lang") ||
+            localStorage.getItem(LANG_KEY) ||
+            getStoredLanguage()
+          : "EN";
 
-    if (
-      stored === "EN" ||
-      stored === "FR" ||
-      stored === "RW"
-    ) {
-      setLangState(stored);
-    } else {
+      if (stored === "EN" || stored === "FR" || stored === "RW") {
+        setLangState(stored);
+      } else {
+        setLangState("EN");
+      }
+    } catch (error) {
+      console.error("Language load error:", error);
       setLangState("EN");
+    } finally {
+      setReady(true);
     }
-
-    setReady(true);
   }, []);
 
-  const setLang = async (l: Lang) => {
-    setLangState(l);
+  const setLang = useCallback(async (l: Lang) => {
+    try {
+      setLangState(l);
 
-    setStoredLanguage(l);
-    localStorage.setItem("app_lang", l);
-    localStorage.setItem(LANG_KEY, l);
+      setStoredLanguage(l);
 
-    const userId = localStorage.getItem("userId");
+      if (typeof window !== "undefined") {
+        localStorage.setItem("app_lang", l);
+        localStorage.setItem(LANG_KEY, l);
+      }
 
-    if (userId) {
-      try {
+      const userId =
+        typeof window !== "undefined"
+          ? localStorage.getItem("userId")
+          : null;
+
+      if (userId) {
         await fetch("/api/user/language", {
           method: "POST",
           headers: {
@@ -73,26 +83,36 @@ export function LanguageProvider({
             language: l,
           }),
         });
-      } catch (err) {
-        console.error("Language save failed:", err);
       }
+    } catch (err) {
+      console.error("Language save failed:", err);
     }
-  };
+  }, []);
 
+  // Instead of returning null (bad UX on mobile), show minimal fallback UI
   if (!ready) {
-    return null;
+    return (
+      <div className="flex items-center justify-center min-h-screen text-sm text-gray-500 px-4 text-center">
+        Loading application...
+      </div>
+    );
   }
 
   return (
-    <LanguageContext.Provider
-      value={{
-        lang,
-        setLang,
-      }}
-    >
+    <LanguageContext.Provider value={{ lang, setLang }}>
       {children}
     </LanguageContext.Provider>
   );
 }
 
-export const useLanguage = () => useContext(LanguageContext);
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+
+  if (!context) {
+    throw new Error(
+      "useLanguage must be used inside LanguageProvider"
+    );
+  }
+
+  return context;
+}

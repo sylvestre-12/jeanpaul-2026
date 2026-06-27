@@ -26,20 +26,23 @@ export default function Button({
       disabled={isDisabled}
       aria-busy={loading}
       className={clsx(
-        // Base (mobile friendly + accessibility)
+        // BASE (mobile-first + accessibility + eye comfort)
+        "w-full sm:w-auto",
         "rounded-xl font-semibold transition",
         "focus:outline-none focus:ring-2 focus:ring-offset-2",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        "min-h-[44px] flex items-center justify-center", // 👈 better for small devices/touch
+        "min-h-[44px]",
+        "flex items-center justify-center gap-2",
+        "whitespace-nowrap",
 
-        // SIZE (touch-friendly spacing)
+        // SIZE (touch-friendly)
         {
           "px-3 py-2 text-sm": size === "sm",
           "px-5 py-3 text-base": size === "md",
           "px-6 py-4 text-lg": size === "lg",
         },
 
-        // VARIANTS (improved contrast for eye comfort)
+        // VARIANTS (better contrast for eye comfort)
         {
           "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-400":
             variant === "primary",
@@ -58,7 +61,7 @@ export default function Button({
       )}
     >
       {loading ? (
-        <span className="flex items-center gap-2">
+        <span className="flex items-center gap-2 text-sm sm:text-base">
           <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
           Loading...
         </span>

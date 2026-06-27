@@ -13,25 +13,28 @@ export default function Navbar({ role }: NavbarProps) {
   const router = useRouter();
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+    <nav className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b">
+
+      <div className="w-full max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
 
         {/* LOGO */}
         <Link
           href="/"
           className="
             text-base sm:text-lg md:text-xl
-            font-bold text-gray-800
+            font-bold text-gray-900
             min-h-[44px]
             flex items-center
+            whitespace-nowrap
           "
         >
           🚦 Traffic System
         </Link>
 
         {/* RIGHT SIDE */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 justify-end">
 
+          {/* LANGUAGE */}
           <LanguageSwitcher />
 
           {/* NOT LOGGED IN */}
@@ -45,10 +48,12 @@ export default function Navbar({ role }: NavbarProps) {
                   text-sm sm:text-base
                   border border-gray-300
                   rounded-xl
-                  text-gray-700
+                  text-gray-800
+                  font-semibold
                   hover:bg-gray-100
                   transition
                   focus:outline-none focus:ring-2 focus:ring-gray-300
+                  whitespace-nowrap
                 "
               >
                 Login
@@ -62,9 +67,11 @@ export default function Navbar({ role }: NavbarProps) {
                   text-sm sm:text-base
                   bg-blue-600 text-white
                   rounded-xl
+                  font-bold
                   hover:bg-blue-700
                   transition
                   focus:outline-none focus:ring-2 focus:ring-blue-400
+                  whitespace-nowrap
                 "
               >
                 Sign Up
@@ -80,7 +87,9 @@ export default function Navbar({ role }: NavbarProps) {
                   hidden sm:block
                   text-xs sm:text-sm
                   text-gray-600
+                  font-medium
                   px-2
+                  whitespace-nowrap
                 "
               >
                 {role}
@@ -94,15 +103,18 @@ export default function Navbar({ role }: NavbarProps) {
                   text-sm sm:text-base
                   bg-red-500 text-white
                   rounded-xl
+                  font-bold
                   hover:bg-red-600
                   transition
                   focus:outline-none focus:ring-2 focus:ring-red-300
+                  whitespace-nowrap
                 "
               >
                 Logout
               </button>
             </>
           )}
+
         </div>
       </div>
     </nav>

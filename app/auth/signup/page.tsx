@@ -36,33 +36,68 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 px-3 sm:px-4">
+    <main className="min-h-screen w-full bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center px-4 py-6 sm:py-10">
 
-      <div className="w-full max-w-md bg-white p-5 sm:p-6 rounded-2xl shadow-lg">
+      {/* CARD */}
+      <div className="
+        w-full max-w-md
+        bg-white
+        rounded-2xl
+        shadow-lg
+        p-5 sm:p-6
+        mt-6 sm:mt-10
+      ">
 
         {/* TOP BAR */}
-        <div className="flex justify-between items-center mb-5">
+        <div className="flex items-center justify-between mb-5">
 
-          {/* BACK BUTTON */}
+          {/* BACK BUTTON (BLACK + STRONG) */}
           <button
             onClick={() => router.back()}
-            className="text-sm bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-700 transition"
+            className="
+              min-h-[44px]
+              px-3 py-2
+              text-sm sm:text-base
+              font-bold text-black
+              border border-gray-400
+              rounded-xl
+              hover:bg-gray-100
+              transition
+            "
           >
             ← Back
           </button>
 
-          {/* LANGUAGE SELECT */}
+          {/* LANGUAGE */}
           <div className="relative">
+
             <button
               onClick={() => setOpen(!open)}
-              className="border px-3 py-1 rounded text-sm hover:bg-gray-100 transition"
+              className="
+                min-h-[44px]
+                px-3 py-2
+                text-sm
+                font-semibold
+                border border-gray-400
+                rounded-xl
+                hover:bg-gray-100
+                transition
+              "
             >
-              🌍 {lang}
+              🌍 {safeLang}
             </button>
 
             {open && (
-              <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded w-40 z-50 overflow-hidden">
-
+              <div className="
+                absolute right-0 mt-2
+                w-44
+                bg-white
+                border border-gray-200
+                rounded-xl
+                shadow-xl
+                z-[999]
+                overflow-hidden
+              ">
                 {(["EN", "FR", "RW"] as Lang[]).map((l) => (
                   <button
                     key={l}
@@ -70,70 +105,113 @@ export default function SignupPage() {
                       changeLanguage(l);
                       setOpen(false);
                     }}
-                    className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 transition"
+                    className="
+                      w-full text-left
+                      px-4 py-3
+                      text-sm
+                      hover:bg-gray-100
+                      transition
+                    "
                   >
-                    {l}
+                    {l === "EN" && "English"}
+                    {l === "FR" && "Français"}
+                    {l === "RW" && "Kinyarwanda"}
                   </button>
                 ))}
-
               </div>
             )}
           </div>
         </div>
 
         {/* TITLE */}
-        <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
+        <h1 className="text-xl sm:text-2xl font-extrabold text-center mb-6 text-gray-900">
           {t.signup}
         </h1>
 
         {/* FORM */}
-        <div className="space-y-3">
+        <div className="space-y-4">
 
           <input
-            className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+            className="
+              w-full
+              min-h-[44px]
+              p-3 sm:p-4
+              border border-gray-300
+              rounded-xl
+              text-sm sm:text-base
+              focus:ring-2 focus:ring-green-500
+              outline-none
+            "
             placeholder="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
 
           <input
-            className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+            className="
+              w-full
+              min-h-[44px]
+              p-3 sm:p-4
+              border border-gray-300
+              rounded-xl
+              text-sm sm:text-base
+              focus:ring-2 focus:ring-green-500
+              outline-none
+            "
             placeholder="Phone"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
 
           <input
-            className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+            className="
+              w-full
+              min-h-[44px]
+              p-3 sm:p-4
+              border border-gray-300
+              rounded-xl
+              text-sm sm:text-base
+              focus:ring-2 focus:ring-green-500
+              outline-none
+            "
             type="password"
             placeholder={t.password}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-
         </div>
 
         {/* SIGNUP BUTTON */}
         <button
           onClick={signup}
-          className="w-full mt-5 bg-green-600 text-white p-3 rounded-lg font-semibold hover:bg-green-700 transition active:scale-[0.98]"
+          className="
+            w-full mt-5
+            min-h-[44px]
+            bg-green-600 text-white
+            p-3 sm:p-4
+            rounded-xl
+            font-bold
+            hover:bg-green-700
+            transition
+            focus:outline-none focus:ring-2 focus:ring-green-400
+          "
         >
           {t.signup}
         </button>
 
         {/* LINKS */}
-        <div className="flex justify-between mt-4 text-sm">
+        <div className="flex justify-between mt-5 text-sm flex-wrap gap-2">
 
           <button
             onClick={() => router.push("/auth/forgot-password")}
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 font-semibold hover:underline"
           >
             {t.forgotPassword}
           </button>
 
           <button
             onClick={() => router.push("/auth/login")}
-            className="text-green-600 hover:underline font-medium"
+            className="text-green-600 font-semibold hover:underline"
           >
             {t.login}
           </button>

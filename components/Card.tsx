@@ -19,11 +19,18 @@ export default function Card({
   return (
     <div
       className={clsx(
-        // Base (mobile friendly + eye comfort)
-        "bg-white/90 backdrop-blur-md",
+        // BASE CARD (mobile-first + readable + soft UI)
+        "w-full",
+        "bg-white/95 backdrop-blur-md",
         "rounded-2xl shadow-sm hover:shadow-md transition",
-        "p-4 sm:p-5 md:p-6",
+
+        // SPACING (VERY IMPORTANT for mobile eyes)
+        "p-5 sm:p-6 md:p-7",
+
+        // BORDER (soft, not harsh)
         "border border-gray-100",
+
+        // TEXT BASE
         "text-gray-900",
 
         className
@@ -32,12 +39,13 @@ export default function Card({
       {/* TITLE */}
       {title && (
         <h3
-          className={clsx(
-            "font-semibold text-gray-900",
-            "mb-3",
-            "text-base sm:text-lg md:text-xl",
-            "leading-snug"
-          )}
+          className="
+            mb-3
+            text-lg sm:text-xl md:text-2xl
+            font-bold
+            text-gray-900
+            leading-snug
+          "
         >
           {title}
         </h3>
@@ -45,11 +53,12 @@ export default function Card({
 
       {/* CONTENT */}
       <div
-        className={clsx(
-          "text-gray-700",
-          "text-sm sm:text-base",
-          "leading-6 sm:leading-7"
-        )}
+        className="
+          text-gray-700
+          text-sm sm:text-base md:text-[15px]
+          leading-7 sm:leading-8
+          tracking-wide
+        "
       >
         {children}
       </div>
@@ -57,10 +66,11 @@ export default function Card({
       {/* FOOTER */}
       {footer && (
         <div
-          className={clsx(
-            "mt-4 pt-3 border-t border-gray-100",
-            "text-sm text-gray-600"
-          )}
+          className="
+            mt-5 pt-4
+            border-t border-gray-100
+            text-sm text-gray-600
+          "
         >
           {footer}
         </div>

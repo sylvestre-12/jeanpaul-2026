@@ -11,45 +11,49 @@ export default function HomePage() {
   const { lang, setLang } = useLanguage();
   const [open, setOpen] = useState(false);
 
-  // Reduces animation for users who prefer less motion
   const shouldReduceMotion = useReducedMotion();
 
   const t = translations[lang];
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <main className="w-full min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 overflow-x-hidden">
 
       {/* NAVBAR */}
-      <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur border-b">
+        <div className="w-full max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
 
-          <h1 className="text-lg md:text-2xl font-bold text-gray-900">
+          {/* LOGO */}
+          <h1 className="text-base sm:text-lg md:text-2xl font-bold text-gray-900 whitespace-nowrap">
             🚦 Traffic System
           </h1>
 
-          <div className="flex items-center gap-2 md:gap-3 relative">
+          {/* RIGHT SIDE */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
 
-            {/* Language */}
+            {/* LANGUAGE */}
             <div className="relative">
+
               <button
                 aria-label="Select language"
                 onClick={() => setOpen(!open)}
                 className="
                   min-h-[44px]
-                  px-3 md:px-4
-                  text-sm md:text-base
-                  border
+                  px-3 sm:px-4
+                  text-sm sm:text-base
+                  border border-gray-300
                   rounded-xl
                   bg-white
                   hover:bg-gray-50
                   transition
+                  font-medium
                 "
               >
                 🌐 Language
               </button>
 
               {open && (
-                <div className="absolute right-0 mt-2 w-44 rounded-xl border bg-white shadow-xl overflow-hidden z-50">
+                <div className="absolute right-0 mt-2 w-44 bg-white border rounded-xl shadow-xl z-50 overflow-hidden">
+
                   {["EN", "FR", "RW"].map((l) => (
                     <button
                       key={l}
@@ -60,11 +64,7 @@ export default function HomePage() {
                       className={`
                         w-full text-left px-4 py-3 text-sm
                         hover:bg-gray-100 transition
-                        ${
-                          lang === l
-                            ? "bg-blue-100 font-semibold"
-                            : ""
-                        }
+                        ${lang === l ? "bg-blue-100 font-semibold" : ""}
                       `}
                     >
                       {l === "EN" && "English"}
@@ -72,124 +72,69 @@ export default function HomePage() {
                       {l === "RW" && "Kinyarwanda"}
                     </button>
                   ))}
+
                 </div>
               )}
             </div>
 
-            {/* Login */}
+            {/* LOGIN */}
             <button
               onClick={() => router.push("/auth/login")}
               className="
                 min-h-[44px]
-                px-4
-                text-sm md:text-base
-                border
+                px-4 py-2
+                text-sm sm:text-base
+                border border-gray-300
                 rounded-xl
+                font-semibold
                 hover:bg-gray-50
                 transition
+                whitespace-nowrap
               "
             >
               {t.login}
             </button>
+
           </div>
         </div>
       </nav>
 
       {/* HERO */}
-      <section className="max-w-5xl mx-auto px-4 pt-12 md:pt-20 text-center">
+      <section className="w-full max-w-5xl mx-auto px-4 pt-10 md:pt-20 text-center">
 
         <motion.h2
-          initial={
-            shouldReduceMotion
-              ? false
-              : { opacity: 0, y: -20 }
-          }
-          animate={
-            shouldReduceMotion
-              ? {}
-              : { opacity: 1, y: 0 }
-          }
+          initial={shouldReduceMotion ? false : { opacity: 0, y: -20 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="
-            text-3xl
-            sm:text-4xl
-            md:text-5xl
-            font-bold
-            leading-tight
-            text-gray-900
-          "
+          className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight"
         >
           {t.title}
         </motion.h2>
 
         <motion.h3
-          initial={
-            shouldReduceMotion
-              ? false
-              : { opacity: 0, y: 15 }
-          }
-          animate={
-            shouldReduceMotion
-              ? {}
-              : { opacity: 1, y: 0 }
-          }
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 15 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="
-            mt-4
-            text-lg
-            md:text-2xl
-            text-blue-600
-            font-medium
-          "
+          className="mt-4 text-lg md:text-2xl text-blue-600 font-medium"
         >
           {t.subtitle}
         </motion.h3>
 
         <motion.p
-          initial={
-            shouldReduceMotion
-              ? false
-              : { opacity: 0 }
-          }
-          animate={
-            shouldReduceMotion
-              ? {}
-              : { opacity: 1 }
-          }
+          initial={shouldReduceMotion ? false : { opacity: 0 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="
-            mt-6
-            max-w-2xl
-            mx-auto
-            text-base
-            md:text-lg
-            leading-8
-            text-gray-600
-          "
+          className="mt-6 max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-gray-600 leading-7"
         >
           {t.description}
         </motion.p>
 
+        {/* BUTTONS */}
         <motion.div
-          initial={
-            shouldReduceMotion
-              ? false
-              : { opacity: 0, y: 10 }
-          }
-          animate={
-            shouldReduceMotion
-              ? {}
-              : { opacity: 1, y: 0 }
-          }
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="
-            mt-8
-            flex
-            flex-col
-            sm:flex-row
-            justify-center
-            gap-4
-          "
+          className="mt-8 flex flex-col sm:flex-row justify-center gap-4"
         >
           <button
             onClick={() => router.push("/auth/signup")}
@@ -197,12 +142,10 @@ export default function HomePage() {
               min-h-[50px]
               px-8
               rounded-xl
-              bg-blue-600
-              text-white
-              font-medium
-              hover:bg-blue-700
-              transition
+              bg-blue-600 text-white font-semibold
+              hover:bg-blue-700 transition
               shadow-md
+              w-full sm:w-auto
             "
           >
             🚀 {t.getStarted}
@@ -214,10 +157,10 @@ export default function HomePage() {
               min-h-[50px]
               px-8
               rounded-xl
-              border
-              font-medium
-              hover:bg-gray-100
-              transition
+              border border-gray-300
+              font-semibold
+              hover:bg-gray-100 transition
+              w-full sm:w-auto
             "
           >
             {t.login}
@@ -226,46 +169,38 @@ export default function HomePage() {
       </section>
 
       {/* FEATURES */}
-      <section className="max-w-6xl mx-auto px-4 py-14 md:py-20">
+      <section className="w-full max-w-6xl mx-auto px-4 py-14 md:py-20">
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
           {[t.learn, t.test, t.track].map((item, i) => (
             <motion.div
               key={i}
-              initial={
-                shouldReduceMotion
-                  ? false
-                  : { opacity: 0, y: 20 }
-              }
-              whileInView={
-                shouldReduceMotion
-                  ? {}
-                  : { opacity: 1, y: 0 }
-              }
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               className="
                 bg-white
                 rounded-2xl
-                p-6
-                shadow-sm
-                border
-                hover:shadow-lg
-                transition
+                p-5 sm:p-6
+                border border-gray-100
+                shadow-sm hover:shadow-md transition
               "
             >
-              <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">
                 {item}
               </h3>
 
-              <p className="text-gray-600 leading-7">
-                {(t as any).featureDesc ||
-                  "Learn traffic rules step by step."}
+              <p className="text-gray-600 text-sm sm:text-base leading-7">
+                {(t as any).featureDesc || "Learn traffic rules step by step."}
               </p>
             </motion.div>
           ))}
+
         </div>
       </section>
+
     </main>
   );
 }

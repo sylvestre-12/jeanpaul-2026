@@ -21,9 +21,7 @@ type ContextType = {
   setLang: (l: Lang) => Promise<void>;
 };
 
-const LanguageContext = createContext<ContextType | undefined>(
-  undefined
-);
+const LanguageContext = createContext<ContextType | undefined>(undefined);
 
 export function LanguageProvider({
   children,
@@ -33,44 +31,38 @@ export function LanguageProvider({
   const [lang, setLangState] = useState<Lang>("EN");
   const [ready, setReady] = useState(false);
 
-  // Load language safely (client-only + SSR safe)
+  // SAFE INIT (no SSR crash)
   useEffect(() => {
     try {
       const stored =
-        typeof window !== "undefined"
-          ? localStorage.getItem("app_lang") ||
-            localStorage.getItem(LANG_KEY) ||
-            getStoredLanguage()
-          : "EN";
+        localStorage.getItem("app_lang") ||
+        localStorage.getItem(LANG_KEY) ||
+        getStoredLanguage();
 
       if (stored === "EN" || stored === "FR" || stored === "RW") {
         setLangState(stored);
       } else {
         setLangState("EN");
       }
-    } catch (error) {
-      console.error("Language load error:", error);
+    } catch (err) {
+      console.error("Language load error:", err);
       setLangState("EN");
     } finally {
       setReady(true);
     }
   }, []);
 
+  // SAFE SET LANGUAGE
   const setLang = useCallback(async (l: Lang) => {
     try {
       setLangState(l);
 
       setStoredLanguage(l);
 
-      if (typeof window !== "undefined") {
-        localStorage.setItem("app_lang", l);
-        localStorage.setItem(LANG_KEY, l);
-      }
+      localStorage.setItem("app_lang", l);
+      localStorage.setItem(LANG_KEY, l);
 
-      const userId =
-        typeof window !== "undefined"
-          ? localStorage.getItem("userId")
-          : null;
+      const userId = localStorage.getItem("userId");
 
       if (userId) {
         await fetch("/api/user/language", {
@@ -89,11 +81,13 @@ export function LanguageProvider({
     }
   }, []);
 
-  // Instead of returning null (bad UX on mobile), show minimal fallback UI
+  // IMPORTANT: NEVER BLOCK FULL SCREEN (mobile fix)
   if (!ready) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-sm text-gray-500 px-4 text-center">
-        Loading application...
+      <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 text-center">
+        <div className="text-gray-500 text-sm sm:text-base font-medium animate-pulse">
+          Loading application...
+        </div>
       </div>
     );
   }
@@ -109,9 +103,7 @@ export function useLanguage() {
   const context = useContext(LanguageContext);
 
   if (!context) {
-    throw new Error(
-      "useLanguage must be used inside LanguageProvider"
-    );
+    throw new Error("useLanguage must be used inside LanguageProvider");
   }
 
   return context;

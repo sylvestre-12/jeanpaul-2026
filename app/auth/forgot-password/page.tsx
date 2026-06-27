@@ -57,123 +57,191 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 px-3 sm:px-4">
+    <main className="min-h-dvh w-full flex flex-col bg-gradient-to-br from-gray-100 to-gray-200 px-4 py-6">
 
-      {/* CARD */}
-      <div className="w-full max-w-sm sm:max-w-md bg-white rounded-2xl shadow-xl p-5 sm:p-6">
+      {/* CENTER WRAPPER (NO MORE BAD CENTERING ON MOBILE) */}
+      <div className="flex-1 w-full flex items-start justify-center">
 
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="w-full max-w-sm sm:max-w-md bg-white rounded-2xl shadow-lg p-5 sm:p-6">
 
-          {/* BACK BUTTON */}
-          <button
-            onClick={() => router.push("/auth/login")}
-            className="text-sm sm:text-base px-3 py-1 rounded-lg border hover:bg-gray-100 transition"
-          >
-            ← Back
-          </button>
+          {/* HEADER */}
+          <div className="flex items-center justify-between gap-2 mb-6">
 
-          {/* LANGUAGE */}
-          <div className="relative">
+            {/* BACK BUTTON */}
             <button
-              onClick={() => setOpen(!open)}
-              className="text-sm px-3 py-1 rounded-lg border hover:bg-gray-100"
+              onClick={() => router.push("/auth/login")}
+              className="
+                min-h-[44px]
+                px-3 py-2
+                text-sm sm:text-base
+                font-semibold text-black
+                border border-gray-300
+                rounded-xl
+                hover:bg-gray-100
+                transition
+                whitespace-nowrap
+              "
             >
-              🌍 {safeLang}
+              ← Back
             </button>
 
-            {open && (
-              <div className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg z-50">
-                {(["EN", "FR", "RW"] as Lang[]).map((l) => (
-                  <button
-                    key={l}
-                    onClick={() => {
-                      changeLanguage(l);
-                      setOpen(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${
-                      safeLang === l ? "bg-blue-50 font-semibold" : ""
-                    }`}
-                  >
-                    {l === "EN" && "English"}
-                    {l === "FR" && "Français"}
-                    {l === "RW" && "Kinyarwanda"}
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* TITLE */}
+            <h1 className="text-base sm:text-xl font-bold text-gray-800 text-center flex-1">
+              {safeLang === "FR"
+                ? "Mot de passe oublié"
+                : safeLang === "RW"
+                ? "Wibagiwe ijambo ry'ibanga"
+                : "Forgot Password"}
+            </h1>
+
+            {/* LANGUAGE */}
+            <div className="relative flex-shrink-0">
+
+              <button
+                onClick={() => setOpen(!open)}
+                className="
+                  min-h-[44px]
+                  px-3 py-2
+                  text-sm font-semibold
+                  border border-gray-300
+                  rounded-xl
+                  hover:bg-gray-100
+                  transition
+                "
+              >
+                🌍 {safeLang}
+              </button>
+
+              {open && (
+                <div className="absolute right-0 mt-2 w-44 bg-white border rounded-xl shadow-lg z-50 overflow-hidden">
+
+                  {(["EN", "FR", "RW"] as Lang[]).map((l) => (
+                    <button
+                      key={l}
+                      onClick={() => {
+                        changeLanguage(l);
+                        setOpen(false);
+                      }}
+                      className={`
+                        w-full text-left px-4 py-3 text-sm
+                        hover:bg-gray-100 transition
+                        ${safeLang === l ? "bg-blue-50 font-semibold" : ""}
+                      `}
+                    >
+                      {l === "EN" && "English"}
+                      {l === "FR" && "Français"}
+                      {l === "RW" && "Kinyarwanda"}
+                    </button>
+                  ))}
+
+                </div>
+              )}
+            </div>
+
           </div>
-        </div>
 
-        {/* TITLE */}
-        <h1 className="text-xl sm:text-2xl font-bold text-center mb-6 text-gray-800">
-          {safeLang === "FR"
-            ? "Mot de passe oublié"
-            : safeLang === "RW"
-            ? "Wibagiwe ijambo ry'ibanga"
-            : "Forgot Password"}
-        </h1>
-
-        {/* FORM */}
-        <div className="space-y-4">
-
-          <input
-            className="w-full p-3 sm:p-4 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm sm:text-base"
-            placeholder={
-              safeLang === "FR"
-                ? "Numéro de téléphone"
-                : safeLang === "RW"
-                ? "Inomero ya telefone"
-                : "Phone number"
-            }
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-
-          <input
-            className="w-full p-3 sm:p-4 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm sm:text-base"
-            type="password"
-            placeholder={
-              safeLang === "FR"
-                ? "Nouveau mot de passe"
-                : safeLang === "RW"
-                ? "Ijambo ry'ibanga rishya"
-                : "New password"
-            }
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-
-          <button
-            onClick={handleReset}
-            disabled={loading}
-            className={`w-full p-3 sm:p-4 rounded-xl font-semibold text-white transition
-              ${loading ? "bg-red-400" : "bg-red-600 hover:bg-red-700"}`}
-          >
-            {loading
-              ? "Processing..."
-              : safeLang === "FR"
-              ? "Réinitialiser"
-              : safeLang === "RW"
-              ? "Hindura"
-              : "Reset Password"}
-          </button>
-        </div>
-
-        {/* FOOTER LINK */}
-        <div className="text-center mt-5 text-sm">
-          <button
-            onClick={() => router.push("/auth/login")}
-            className="text-blue-600 hover:underline"
-          >
+          {/* TITLE (MOBILE FRIENDLY BACKUP) */}
+          <p className="text-center text-sm text-gray-500 mb-6 leading-6">
             {safeLang === "FR"
-              ? "Retour connexion"
+              ? "Entrez votre numéro et nouveau mot de passe"
               : safeLang === "RW"
-              ? "Subira kwinjira"
-              : "Back to login"}
-          </button>
-        </div>
+              ? "Andika numero yawe n'ijambo ry'ibanga rishya"
+              : "Enter your phone number and new password"}
+          </p>
 
+          {/* FORM */}
+          <div className="space-y-4">
+
+            <input
+              className="
+                w-full
+                min-h-[44px]
+                p-3 sm:p-4
+                border border-gray-300
+                rounded-xl
+                text-sm sm:text-base
+                focus:ring-2 focus:ring-red-500
+                outline-none
+              "
+              placeholder={
+                safeLang === "FR"
+                  ? "Numéro de téléphone"
+                  : safeLang === "RW"
+                  ? "Inomero ya telefone"
+                  : "Phone number"
+              }
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+
+            <input
+              className="
+                w-full
+                min-h-[44px]
+                p-3 sm:p-4
+                border border-gray-300
+                rounded-xl
+                text-sm sm:text-base
+                focus:ring-2 focus:ring-red-500
+                outline-none
+              "
+              type="password"
+              placeholder={
+                safeLang === "FR"
+                  ? "Nouveau mot de passe"
+                  : safeLang === "RW"
+                  ? "Ijambo ry'ibanga rishya"
+                  : "New password"
+              }
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+
+            <button
+              onClick={handleReset}
+              disabled={loading}
+              className={`
+                w-full
+                min-h-[44px]
+                p-3 sm:p-4
+                rounded-xl
+                font-bold
+                text-white
+                transition
+                focus:outline-none focus:ring-2 focus:ring-red-400
+                ${
+                  loading
+                    ? "bg-red-400 cursor-not-allowed"
+                    : "bg-red-600 hover:bg-red-700"
+                }
+              `}
+            >
+              {loading
+                ? "Processing..."
+                : safeLang === "FR"
+                ? "Réinitialiser"
+                : safeLang === "RW"
+                ? "Hindura"
+                : "Reset Password"}
+            </button>
+
+          </div>
+
+          {/* FOOTER */}
+          <div className="text-center mt-6">
+            <button
+              onClick={() => router.push("/auth/login")}
+              className="text-blue-600 font-semibold hover:underline"
+            >
+              {safeLang === "FR"
+                ? "Retour connexion"
+                : safeLang === "RW"
+                ? "Subira kwinjira"
+                : "Back to login"}
+            </button>
+          </div>
+
+        </div>
       </div>
     </main>
   );

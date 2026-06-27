@@ -23,18 +23,24 @@ export default function QuestionTable({
   const router = useRouter();
 
   const handleDelete = async (id: number) => {
-    const confirmDelete = confirm("Are you sure you want to delete this question?");
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this question?"
+    );
     if (!confirmDelete) return;
 
-    await fetch(`/api/admin/questions/${id}`, {
-      method: "DELETE",
-    });
+    try {
+      await fetch(`/api/admin/questions/${id}`, {
+        method: "DELETE",
+      });
 
-    router.refresh();
+      router.refresh();
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
   };
 
   return (
-    <div className="grid gap-4">
+    <div className="w-full grid gap-4 sm:gap-5">
       {questions.map((q) => {
         const text =
           q.translations.find((t) => t.language === lang)?.text || "-";
@@ -43,14 +49,16 @@ export default function QuestionTable({
           <div
             key={q.id}
             className="
+              w-full
+              bg-white
               border border-gray-200
               rounded-2xl
-              p-4 sm:p-5
-              bg-white
+              p-4 sm:p-5 md:p-6
               shadow-sm hover:shadow-md
               transition
             "
           >
+            {/* TOP SECTION */}
             <div className="flex gap-3 sm:gap-4">
 
               {/* IMAGE */}
@@ -82,13 +90,13 @@ export default function QuestionTable({
                 )}
               </div>
 
-              {/* CONTENT */}
+              {/* TEXT CONTENT */}
               <div className="flex-1 min-w-0">
-                <p className="text-xs sm:text-sm text-gray-500">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">
                   Question ID: {q.id}
                 </p>
 
-                <p className="mt-1 text-sm sm:text-base text-gray-800 leading-6">
+                <p className="mt-1 text-sm sm:text-base md:text-[15px] text-gray-800 leading-7">
                   {text}
                 </p>
               </div>
@@ -106,6 +114,7 @@ export default function QuestionTable({
                   min-h-[44px]
                   px-4 py-2
                   text-sm sm:text-base
+                  font-semibold
                   bg-blue-600 text-white
                   rounded-xl
                   hover:bg-blue-700
@@ -123,6 +132,7 @@ export default function QuestionTable({
                   min-h-[44px]
                   px-4 py-2
                   text-sm sm:text-base
+                  font-semibold
                   bg-red-500 text-white
                   rounded-xl
                   hover:bg-red-600

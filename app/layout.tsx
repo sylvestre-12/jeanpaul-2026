@@ -9,24 +9,26 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Mobile responsiveness (important) */}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* FIX MOBILE VIEWPORT */}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
       </head>
 
       <body
         className="
-          min-h-screen
-          flex flex-col
+          min-h-dvh
+          w-full
           bg-gray-50
           text-gray-900
           antialiased
           overflow-x-hidden
-          leading-relaxed
+          flex flex-col
         "
       >
-        {/* GLOBAL APP WRAPPER */}
         <LanguageProvider>
-          <div className="flex-1 w-full">
+          <div className="flex flex-col flex-1 w-full min-h-dvh">
             {children}
           </div>
         </LanguageProvider>

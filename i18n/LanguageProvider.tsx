@@ -31,7 +31,15 @@ export function LanguageProvider({
   const [lang, setLangState] = useState<Lang>("EN");
   const [ready, setReady] = useState(false);
 
-  // SAFE INIT (no SSR crash)
+  // ✅ GLOBAL EVENT (this is the KEY FIX)
+  const broadcastLanguageChange = (value: Lang) => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("lang-change", { detail: value })
+      );
+    }
+  };
+
   useEffect(() => {
     try {
       const stored =
@@ -39,40 +47,43 @@ export function LanguageProvider({
         localStorage.getItem(LANG_KEY) ||
         getStoredLanguage();
 
-      if (stored === "EN" || stored === "FR" || stored === "RW") {
-        setLangState(stored);
+      const normalized = (stored || "EN").toUpperCase();
+
+      if (normalized === "EN" || normalized === "FR" || normalized === "RW") {
+        setLangState(normalized as Lang);
       } else {
         setLangState("EN");
       }
-    } catch (err) {
-      console.error("Language load error:", err);
+    } catch {
       setLangState("EN");
     } finally {
       setReady(true);
     }
   }, []);
 
-  // SAFE SET LANGUAGE
   const setLang = useCallback(async (l: Lang) => {
     try {
-      setLangState(l);
+      const value = l.toUpperCase() as Lang;
 
-      setStoredLanguage(l);
+      setLangState(value);
 
-      localStorage.setItem("app_lang", l);
-      localStorage.setItem(LANG_KEY, l);
+      setStoredLanguage(value);
+
+      localStorage.setItem("app_lang", value);
+      localStorage.setItem(LANG_KEY, value);
+
+      // 🔥 THIS MAKES ALL COMPONENTS REACT INSTANTLY
+      broadcastLanguageChange(value);
 
       const userId = localStorage.getItem("userId");
 
       if (userId) {
         await fetch("/api/user/language", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             userId,
-            language: l,
+            language: value,
           }),
         });
       }
@@ -81,13 +92,10 @@ export function LanguageProvider({
     }
   }, []);
 
-  // IMPORTANT: NEVER BLOCK FULL SCREEN (mobile fix)
   if (!ready) {
     return (
-      <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 text-center">
-        <div className="text-gray-500 text-sm sm:text-base font-medium animate-pulse">
-          Loading application...
-        </div>
+      <div className="min-h-screen w-full flex items-center justify-center">
+        Loading...
       </div>
     );
   }

@@ -37,14 +37,7 @@ export default function ForgotPasswordPage() {
       const data = await res.json();
 
       if (res.ok) {
-        alert(
-          safeLang === "FR"
-            ? "Mot de passe réinitialisé avec succès"
-            : safeLang === "RW"
-            ? "Ijambo ry'ibanga ryahinduwe neza"
-            : "Password reset successful"
-        );
-
+        alert(t.redirecting || "Success");
         router.push("/auth/login");
       } else {
         alert(data.error || "Reset failed");
@@ -59,55 +52,31 @@ export default function ForgotPasswordPage() {
   return (
     <main className="min-h-dvh w-full flex flex-col bg-gradient-to-br from-gray-100 to-gray-200 px-4 py-6">
 
-      {/* CENTER WRAPPER (NO MORE BAD CENTERING ON MOBILE) */}
-      <div className="flex-1 w-full flex items-start justify-center">
+      {/* CENTER WRAPPER */}
+      <div className="flex-1 w-full flex items-center justify-center">
 
-        <div className="w-full max-w-sm sm:max-w-md bg-white rounded-2xl shadow-lg p-5 sm:p-6">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-5 sm:p-6">
 
           {/* HEADER */}
           <div className="flex items-center justify-between gap-2 mb-6">
 
-            {/* BACK BUTTON */}
             <button
               onClick={() => router.push("/auth/login")}
-              className="
-                min-h-[44px]
-                px-3 py-2
-                text-sm sm:text-base
-                font-semibold text-black
-                border border-gray-300
-                rounded-xl
-                hover:bg-gray-100
-                transition
-                whitespace-nowrap
-              "
+              className="min-h-[44px] px-3 py-2 text-sm font-semibold border border-gray-300 rounded-xl hover:bg-gray-100"
             >
-              ← Back
+              {t.back}
             </button>
 
-            {/* TITLE */}
-            <h1 className="text-base sm:text-xl font-bold text-gray-800 text-center flex-1">
-              {safeLang === "FR"
-                ? "Mot de passe oublié"
-                : safeLang === "RW"
-                ? "Wibagiwe ijambo ry'ibanga"
-                : "Forgot Password"}
+            <h1 className="text-sm sm:text-xl font-bold text-center flex-1">
+              {t.forgotPassword}
             </h1>
 
             {/* LANGUAGE */}
-            <div className="relative flex-shrink-0">
+            <div className="relative">
 
               <button
                 onClick={() => setOpen(!open)}
-                className="
-                  min-h-[44px]
-                  px-3 py-2
-                  text-sm font-semibold
-                  border border-gray-300
-                  rounded-xl
-                  hover:bg-gray-100
-                  transition
-                "
+                className="min-h-[44px] px-3 py-2 text-sm font-semibold border border-gray-300 rounded-xl hover:bg-gray-100"
               >
                 🌍 {safeLang}
               </button>
@@ -122,11 +91,7 @@ export default function ForgotPasswordPage() {
                         changeLanguage(l);
                         setOpen(false);
                       }}
-                      className={`
-                        w-full text-left px-4 py-3 text-sm
-                        hover:bg-gray-100 transition
-                        ${safeLang === l ? "bg-blue-50 font-semibold" : ""}
-                      `}
+                      className="w-full text-left px-4 py-3 text-sm hover:bg-gray-100"
                     >
                       {l === "EN" && "English"}
                       {l === "FR" && "Français"}
@@ -140,8 +105,8 @@ export default function ForgotPasswordPage() {
 
           </div>
 
-          {/* TITLE (MOBILE FRIENDLY BACKUP) */}
-          <p className="text-center text-sm text-gray-500 mb-6 leading-6">
+          {/* DESCRIPTION */}
+          <p className="text-center text-sm text-gray-500 mb-6">
             {safeLang === "FR"
               ? "Entrez votre numéro et nouveau mot de passe"
               : safeLang === "RW"
@@ -153,46 +118,16 @@ export default function ForgotPasswordPage() {
           <div className="space-y-4">
 
             <input
-              className="
-                w-full
-                min-h-[44px]
-                p-3 sm:p-4
-                border border-gray-300
-                rounded-xl
-                text-sm sm:text-base
-                focus:ring-2 focus:ring-red-500
-                outline-none
-              "
-              placeholder={
-                safeLang === "FR"
-                  ? "Numéro de téléphone"
-                  : safeLang === "RW"
-                  ? "Inomero ya telefone"
-                  : "Phone number"
-              }
+              className="w-full min-h-[44px] p-3 border border-gray-300 rounded-xl text-sm sm:text-base focus:ring-2 focus:ring-red-500 outline-none"
+              placeholder={t.phone}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
 
             <input
-              className="
-                w-full
-                min-h-[44px]
-                p-3 sm:p-4
-                border border-gray-300
-                rounded-xl
-                text-sm sm:text-base
-                focus:ring-2 focus:ring-red-500
-                outline-none
-              "
+              className="w-full min-h-[44px] p-3 border border-gray-300 rounded-xl text-sm sm:text-base focus:ring-2 focus:ring-red-500 outline-none"
               type="password"
-              placeholder={
-                safeLang === "FR"
-                  ? "Nouveau mot de passe"
-                  : safeLang === "RW"
-                  ? "Ijambo ry'ibanga rishya"
-                  : "New password"
-              }
+              placeholder={t.password}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
@@ -200,29 +135,11 @@ export default function ForgotPasswordPage() {
             <button
               onClick={handleReset}
               disabled={loading}
-              className={`
-                w-full
-                min-h-[44px]
-                p-3 sm:p-4
-                rounded-xl
-                font-bold
-                text-white
-                transition
-                focus:outline-none focus:ring-2 focus:ring-red-400
-                ${
-                  loading
-                    ? "bg-red-400 cursor-not-allowed"
-                    : "bg-red-600 hover:bg-red-700"
-                }
-              `}
+              className={`w-full min-h-[44px] rounded-xl font-bold text-white transition ${
+                loading ? "bg-red-400" : "bg-red-600 hover:bg-red-700"
+              }`}
             >
-              {loading
-                ? "Processing..."
-                : safeLang === "FR"
-                ? "Réinitialiser"
-                : safeLang === "RW"
-                ? "Hindura"
-                : "Reset Password"}
+              {loading ? t.loading : t.forgotPassword}
             </button>
 
           </div>
@@ -233,11 +150,7 @@ export default function ForgotPasswordPage() {
               onClick={() => router.push("/auth/login")}
               className="text-blue-600 font-semibold hover:underline"
             >
-              {safeLang === "FR"
-                ? "Retour connexion"
-                : safeLang === "RW"
-                ? "Subira kwinjira"
-                : "Back to login"}
+              {t.login}
             </button>
           </div>
 

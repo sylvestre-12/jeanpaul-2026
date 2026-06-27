@@ -12,7 +12,7 @@ export default function SignupPage() {
   const { lang, changeLanguage } = useLanguage();
 
   const safeLang: Lang = (lang as Lang) || "EN";
-  const t = translations[safeLang];
+  const t = translations[safeLang] || translations.EN;
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -36,68 +36,30 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="min-h-screen w-full bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center px-4 py-6 sm:py-10">
+    <main className="min-h-dvh w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 px-4">
 
-      {/* CARD */}
-      <div className="
-        w-full max-w-md
-        bg-white
-        rounded-2xl
-        shadow-lg
-        p-5 sm:p-6
-        mt-6 sm:mt-10
-      ">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-5 sm:p-6">
 
-        {/* TOP BAR */}
+        {/* HEADER */}
         <div className="flex items-center justify-between mb-5">
 
-          {/* BACK BUTTON (BLACK + STRONG) */}
           <button
             onClick={() => router.back()}
-            className="
-              min-h-[44px]
-              px-3 py-2
-              text-sm sm:text-base
-              font-bold text-black
-              border border-gray-400
-              rounded-xl
-              hover:bg-gray-100
-              transition
-            "
+            className="min-h-[44px] px-3 py-2 text-sm font-bold border rounded-xl"
           >
-            ← Back
+            {t.back}
           </button>
 
-          {/* LANGUAGE */}
           <div className="relative">
-
             <button
               onClick={() => setOpen(!open)}
-              className="
-                min-h-[44px]
-                px-3 py-2
-                text-sm
-                font-semibold
-                border border-gray-400
-                rounded-xl
-                hover:bg-gray-100
-                transition
-              "
+              className="min-h-[44px] px-3 py-2 text-sm border rounded-xl"
             >
               🌍 {safeLang}
             </button>
 
             {open && (
-              <div className="
-                absolute right-0 mt-2
-                w-44
-                bg-white
-                border border-gray-200
-                rounded-xl
-                shadow-xl
-                z-[999]
-                overflow-hidden
-              ">
+              <div className="absolute right-0 mt-2 w-44 bg-white border rounded-xl shadow-xl z-50">
                 {(["EN", "FR", "RW"] as Lang[]).map((l) => (
                   <button
                     key={l}
@@ -105,17 +67,9 @@ export default function SignupPage() {
                       changeLanguage(l);
                       setOpen(false);
                     }}
-                    className="
-                      w-full text-left
-                      px-4 py-3
-                      text-sm
-                      hover:bg-gray-100
-                      transition
-                    "
+                    className="w-full text-left px-4 py-3 text-sm hover:bg-gray-100"
                   >
-                    {l === "EN" && "English"}
-                    {l === "FR" && "Français"}
-                    {l === "RW" && "Kinyarwanda"}
+                    {l}
                   </button>
                 ))}
               </div>
@@ -124,56 +78,35 @@ export default function SignupPage() {
         </div>
 
         {/* TITLE */}
-        <h1 className="text-xl sm:text-2xl font-extrabold text-center mb-6 text-gray-900">
+        <h1 className="text-xl font-bold text-center mb-6">
           {t.signup}
         </h1>
 
         {/* FORM */}
         <div className="space-y-4">
-
+<label className="text-sm font-semibold text-gray-700">
+              {t.name}
+            </label>
           <input
-            className="
-              w-full
-              min-h-[44px]
-              p-3 sm:p-4
-              border border-gray-300
-              rounded-xl
-              text-sm sm:text-base
-              focus:ring-2 focus:ring-green-500
-              outline-none
-            "
-            placeholder="Name"
+            className="w-full min-h-[44px] p-3 border rounded-xl"
+            placeholder={t.name}
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-
+<label className="text-sm font-semibold text-gray-700">
+              {t.phone}
+            </label>
           <input
-            className="
-              w-full
-              min-h-[44px]
-              p-3 sm:p-4
-              border border-gray-300
-              rounded-xl
-              text-sm sm:text-base
-              focus:ring-2 focus:ring-green-500
-              outline-none
-            "
-            placeholder="Phone"
+            className="w-full min-h-[44px] p-3 border rounded-xl"
+            placeholder={t.phone}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
-
+           <label className="text-sm font-semibold text-gray-700">
+              {t.password}
+            </label>
           <input
-            className="
-              w-full
-              min-h-[44px]
-              p-3 sm:p-4
-              border border-gray-300
-              rounded-xl
-              text-sm sm:text-base
-              focus:ring-2 focus:ring-green-500
-              outline-none
-            "
+            className="w-full min-h-[44px] p-3 border rounded-xl"
             type="password"
             placeholder={t.password}
             value={password}
@@ -181,20 +114,10 @@ export default function SignupPage() {
           />
         </div>
 
-        {/* SIGNUP BUTTON */}
+        {/* BUTTON */}
         <button
           onClick={signup}
-          className="
-            w-full mt-5
-            min-h-[44px]
-            bg-green-600 text-white
-            p-3 sm:p-4
-            rounded-xl
-            font-bold
-            hover:bg-green-700
-            transition
-            focus:outline-none focus:ring-2 focus:ring-green-400
-          "
+          className="w-full mt-5 min-h-[44px] bg-green-600 text-white rounded-xl font-bold"
         >
           {t.signup}
         </button>

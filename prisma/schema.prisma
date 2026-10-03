@@ -90,6 +90,7 @@ model Result {
   userId    Int
   createdAt DateTime     @default(now())
   total     Int
+  language  Language     @default(EN)
   user      User         @relation(fields: [userId], references: [id])
   answers   UserAnswer[]
 }

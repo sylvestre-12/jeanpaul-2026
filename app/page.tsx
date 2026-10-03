@@ -24,7 +24,7 @@ export default function HomePage() {
 
           {/* LOGO */}
           <h1 className="text-base sm:text-lg md:text-2xl font-bold text-gray-900 whitespace-nowrap">
-            🚦 Traffic System
+          🚦 Traffic Syste
           </h1>
 
           {/* RIGHT SIDE */}

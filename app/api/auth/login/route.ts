@@ -81,6 +81,7 @@ export async function POST(req: Request) {
         userId: user.id,
         name: user.name,   // ✅ ADDED
         phone: user.phone, // ✅ ADDED
+        language: user.language,
         role: "ADMIN",
         redirect: "/auth/otp",
       });

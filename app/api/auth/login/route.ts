@@ -3,8 +3,8 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 
-const ADMIN_PHONE = "0786278953";
-const ADMIN_EMAIL = "120tegeri@gmail.com";
+const ADMIN_PHONE = "0783249298";
+const ADMIN_EMAIL = "jeanpaulbgmail.com";
 
 export async function POST(req: Request) {
   try {

@@ -123,64 +123,69 @@ export const translations = {
     greatPerformance: "Très bonne performance",
     redirecting: "Redirection...",
   },
+RW: {
+  // ===== APP GENERAL INFO =====
+  appName: "Sisitemu y’Umuhanda",
 
-  RW: {
-    // ===== APP GENERAL INFO =====
-    appName: "Sisitemu y’Umuhanda",
+  // ===== HOME / LANDING PAGE =====
+  title: "Menya Amategeko y’Umuhanda",
+  subtitle: "Tsinda Ikizamini Byoroshye",
+  description:
+    "Iga, gerageza ibizamini, ukurikirane amanota yawe.",
 
-    // ===== HOME / LANDING PAGE =====
-    title: "Menya Amategeko y’Umuhanda",
-    subtitle: "Tsinda Ikizamini Byoroshye",
-    description:
-      "Iga, gerageza ibizamini, ukurikirane amanota yawe.",
+  getStarted: "Tangira",
 
-    getStarted: "Tangira",
+  // ===== AUTH (LOGIN / SIGNUP) =====
+  login: "Injira",
+  signup: "Iyandikishe",
+  back: "Subira inyuma",
+  forgotPassword: "Wibagiwe ijambo ry’ibanga?",
 
-    // ===== AUTH (LOGIN / SIGNUP) =====
-    login: "Injira",
-    signup: "Iyandikishe",
-    back: "Subira inyuma",
-    forgotPassword: "Wibagiwe ijambo ry’ibanga?",
+  loginTitle: "Injira kuri konti yawe",
+  email: "Telefoni cyangwa Email",
+  password: "Ijambo ry’ibanga",
+  name: "Amazina",
 
-    loginTitle: "Injira kuri konti yawe",
-    email: "Telefoni cyangwa Email",
-    password: "Ijambo ry’ibanga",
-     name: "Amazina",
+  // ===== FEATURES SECTION =====
+  learn: "Kwiga",
+  test: "Ibizamini nyabyo",
+  track: "Gukurikirana",
+  featureDesc:
+    "Menya amategeko y’umuhanda intambwe ku ntambwe",
 
-    // ===== FEATURES SECTION =====
-    learn: "Kwiga",
-    test: "Ibizamini nyabyo",
-    track: "Gukurikirana",
-    featureDesc: "Menya amategeko y’umuhanda intambwe ku ntambwe",
+  // ===== EXAM SYSTEM =====
+  startExam: "Tangira ikizamini",
+  startExamDesc: "Tangira gusubiza ibibazo",
 
-    // ===== EXAM SYSTEM =====
-    startExam: "Tangira ikizamini",
-    startExamDesc: "Tangira gusubiza ibibazo",
+  // ===== DASHBOARD =====
+  welcome: "Murakaza neza",
+  loading: "Birimo gutangizwa...",
+  phone: "Telefoni",
+  dashboardMessage:
+    "Witeguye kuzamura amanota yawe uyu munsi 🚀",
 
-    // ===== DASHBOARD =====
-    // ===== DASHBOARD =====
-welcome: "Murakaza neza",
-loading: "Birimo gutangizwa...",
-phone: "Telefoni",
-dashboardMessage: "Witeguye kuzamura amanota yawe uyu munsi 🚀",
+  myResults: "Amanota Yanjye",
+  myResultsDesc: "Reba amanota yawe ya vuba",
 
-myResults: "Amanota Yanjye",
-myResultsDesc: "Reba amanota yawe ya vuba",
+  examHistory: "Amateka y'Ibizamini",
+  examHistoryDesc:
+    "Reba ibizamini wakoze byose",
 
-examHistory: "Amateka y'Ibizamini",
-examHistoryDesc: "Reba ibizamini wakoze byose",
+  downloadReports: "Kuramo Raporo",
+  downloadReportsDesc:
+    "Bona raporo n'amanota bya PDF",
 
-downloadReports: "Kuramo Raporo",
-downloadReportsDesc: "Bona raporo n'amanota bya PDF",
+  examSystem: "Sisitemu y'Ibizamini",
+  allRightsReserved:
+    "Uburenganzira bwose burarinzwe",
 
   // ===== NEW FEATURE: Q&A MODULE =====
-readQA: "Soma Ibibazo n'Inyishu",
-readQADesc:
-  "Reba ibibazo byawe, ibisubizo n'ibikosoye",
+  readQA: "Soma Ibibazo n'Inyishu",
+  readQADesc:
+    "Reba ibibazo byawe, ibisubizo n'ibikosoye",
 
-// ===== RESULTS FEEDBACK =====
-keepPracticing: "Komeza imyitozo",
-greatPerformance: "Ukoze neza cyane",
-redirecting: "Birimo kuguhindura...",
-  },
-};
+  // ===== RESULTS FEEDBACK =====
+  keepPracticing: "Komeza imyitozo",
+  greatPerformance: "Ukoze neza cyane",
+  redirecting: "Birimo kuguhindura...",
+}}

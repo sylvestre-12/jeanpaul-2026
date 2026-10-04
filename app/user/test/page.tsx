@@ -31,7 +31,6 @@ type Question = {
 const STORAGE_KEY = "user-exam-session-v1";
 
 export default function UserExamPage() {
- 
   const { lang, setLang } = useLanguage();
 
   const [userName, setUserName] = useState<string>("");
@@ -55,33 +54,49 @@ export default function UserExamPage() {
 
   // ================= USER INFO =================
 
+  useEffect(() => {
+    const savedLang =
+      localStorage.getItem("app_lang") ||
+      localStorage.getItem("language") ||
+      localStorage.getItem("lang");
 
-useEffect(() => {
-  const savedLang =
-    localStorage.getItem("app_lang") ||
-    localStorage.getItem("language") ||
-    localStorage.getItem("lang");
+    if (savedLang) {
+      setLang(savedLang as Language);
+    }
 
-  if (savedLang) {
-    setLang(savedLang as Language);
-  }
+    setUserName(
+      localStorage.getItem("userName") || "User"
+    );
 
-  setUserName(localStorage.getItem("userName") || "User");
-  setUserPhone(localStorage.getItem("userPhone") || "");
-}, [setLang]);
+    setUserPhone(
+      localStorage.getItem("userPhone") || ""
+    );
+  }, [setLang]);
+
   // ================= LOAD QUESTIONS =================
+
   useEffect(() => {
     async function loadQuestions() {
       try {
-        const res = await fetch("/api/user/test");
+        const res = await fetch("/api/user/test", {
+          cache: "no-store",
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to load questions");
+        }
+
         const data = await res.json();
 
-        const shuffled = [...data].sort(() => Math.random() - 0.5);
-        const selected = shuffled.slice(0, 20);
-
-        const randomized = selected.map((q: Question) => ({
+        /*
+         * The API already selects the 20 questions.
+         * We only randomize the options here.
+         */
+        const randomized = data.map((q: Question) => ({
           ...q,
-          options: [...q.options].sort(() => Math.random() - 0.5),
+          options: [...q.options].sort(
+            () => Math.random() - 0.5
+          ),
         }));
 
         setQuestions(randomized);
@@ -90,11 +105,19 @@ useEffect(() => {
 
         if (saved) {
           const parsed = JSON.parse(saved);
+
           setAnswers(parsed.answers || {});
           setCurrentIndex(parsed.currentIndex || 0);
-          setTimeLeft(parsed.timeLeft ?? 20 * 60);
+          setTimeLeft(
+            parsed.timeLeft ?? 20 * 60
+          );
           setStarted(true);
         }
+      } catch (error) {
+        console.error(
+          "LOAD QUESTIONS ERROR:",
+          error
+        );
       } finally {
         setLoading(false);
       }
@@ -104,6 +127,7 @@ useEffect(() => {
   }, []);
 
   // ================= AUTO SAVE =================
+
   useEffect(() => {
     if (!started || finished) return;
 
@@ -115,9 +139,16 @@ useEffect(() => {
         timeLeft,
       })
     );
-  }, [answers, currentIndex, timeLeft, started, finished]);
+  }, [
+    answers,
+    currentIndex,
+    timeLeft,
+    started,
+    finished,
+  ]);
 
   // ================= COUNTDOWN =================
+
   useEffect(() => {
     if (loading || started) return;
 
@@ -126,11 +157,16 @@ useEffect(() => {
       return;
     }
 
-    const t = setTimeout(() => setCountdown((p) => p - 1), 1000);
+    const t = setTimeout(
+      () => setCountdown((p) => p - 1),
+      1000
+    );
+
     return () => clearTimeout(t);
   }, [countdown, loading, started]);
 
   // ================= TIMER =================
+
   useEffect(() => {
     if (!started || finished) return;
 
@@ -144,88 +180,174 @@ useEffect(() => {
     }, 1000);
 
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
     };
   }, [started, timeLeft, finished]);
 
-  // ================= FINISH =================
+  // ================= FINISH EXAM =================
+
   async function finishExam() {
-    let total = 0;
-    const answerList: any[] = [];
+    try {
+      const answerList: {
+        questionId: number;
+        optionId: number;
+      }[] = [];
 
-    questions.forEach((q) => {
-      const selected = answers[q.id];
-      const correct = q.options.find((o) => o.isCorrect);
+      questions.forEach((q) => {
+        const selected = answers[q.id];
 
-      if (correct && selected === correct.id) total++;
+        if (selected) {
+          answerList.push({
+            questionId: q.id,
+            optionId: selected,
+          });
+        }
+      });
 
-      if (selected) {
-        answerList.push({
-          questionId: q.id,
-          optionId: selected,
-        });
+      const userId = localStorage.getItem("userId");
+
+      if (!userId) {
+        alert(
+          "User ID not found. Please login again."
+        );
+        return;
       }
-    });
 
-    setScore(total);
-    setFinished(true);
-    localStorage.removeItem(STORAGE_KEY);
-
-    const userId = localStorage.getItem("userId");
-
-    await fetch("/api/user/test", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+      console.log("SUBMITTING EXAM:", {
         userId,
-        score: total,
-        total: questions.length,
         answers: answerList,
-      }),
-    });
+      });
 
-    setTimeout(() => {
-      window.location.href = "/user/dashboard";
-    }, 3000);
+      const res = await fetch("/api/user/test", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: Number(userId),
+          answers: answerList,
+        }),
+      });
+
+      const data = await res.json();
+
+      console.log(
+        "SUBMIT RESPONSE:",
+        data
+      );
+
+      if (!res.ok || !data.success) {
+        console.error(
+          "EXAM SAVE FAILED:",
+          data
+        );
+
+        alert(
+          data.error ||
+            "Failed to save exam."
+        );
+
+        return;
+      }
+
+      // Use score calculated by the server
+      setScore(data.score);
+      setFinished(true);
+
+      // Remove saved unfinished session
+      localStorage.removeItem(
+        STORAGE_KEY
+      );
+
+      setTimeout(() => {
+        window.location.href =
+          "/user/dashboard";
+      }, 3000);
+    } catch (error) {
+      console.error(
+        "FINISH EXAM ERROR:",
+        error
+      );
+
+      alert(
+        "Failed to submit exam."
+      );
+    }
   }
 
-  function selectAnswer(questionId: number, optionId: number) {
-    setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
+  // ================= SELECT ANSWER =================
+
+  function selectAnswer(
+    questionId: number,
+    optionId: number
+  ) {
+    setAnswers((prev) => ({
+      ...prev,
+      [questionId]: optionId,
+    }));
   }
+
+  // ================= NEXT =================
 
   function nextQuestion() {
-    if (currentIndex < questions.length - 1) {
+    if (
+      currentIndex <
+      questions.length - 1
+    ) {
       setCurrentIndex((p) => p + 1);
     } else {
       finishExam();
     }
   }
 
+  // ================= PREVIOUS =================
+
   function previousQuestion() {
-    if (currentIndex > 0) setCurrentIndex((p) => p - 1);
+    if (currentIndex > 0) {
+      setCurrentIndex((p) => p - 1);
+    }
   }
 
+  // ================= FORMAT TIME =================
+
   const formattedTime = useMemo(() => {
-    const m = Math.floor(timeLeft / 60);
+    const m = Math.floor(
+      timeLeft / 60
+    );
+
     const s = timeLeft % 60;
-    return `${m}:${s.toString().padStart(2, "0")}`;
+
+    return `${m}:${s
+      .toString()
+      .padStart(2, "0")}`;
   }, [timeLeft]);
+
+  // ================= QUESTION TEXT =================
 
   function getQuestionText(q: Question) {
     return (
-      q.translations.find((t) => t.language === lang)?.text ||
+      q.translations.find(
+        (t) => t.language === lang
+      )?.text ||
       "No translation"
     );
   }
 
+  // ================= OPTION TEXT =================
+
   function getOptionText(o: Option) {
     return (
-      o.translations.find((t) => t.language === lang)?.text ||
+      o.translations.find(
+        (t) => t.language === lang
+      )?.text ||
       "No translation"
     );
   }
 
   // ================= LOADING =================
+
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center font-bold">
@@ -235,28 +357,35 @@ useEffect(() => {
   }
 
   // ================= COUNTDOWN =================
+
   if (!started) {
     return (
       <div className="h-screen flex flex-col items-center justify-center">
-        <h1 className="text-3xl font-bold mb-2">Exam Starts In</h1>
+        <h1 className="text-3xl font-bold mb-2">
+          Exam Starts In
+        </h1>
 
-        {/* USER INFO */}
         <div className="mb-4 text-center text-gray-600">
           <p>👤 {userName}</p>
           <p>📱 {userPhone}</p>
           <p>🌍 {lang}</p>
         </div>
 
-        <div className="text-7xl font-bold text-blue-600">{countdown}</div>
+        <div className="text-7xl font-bold text-blue-600">
+          {countdown}
+        </div>
       </div>
     );
   }
 
   // ================= RESULT =================
+
   if (finished) {
     return (
       <div className="h-screen flex flex-col items-center justify-center text-center">
-        <h1 className="text-3xl font-bold mb-4">Final Result</h1>
+        <h1 className="text-3xl font-bold mb-4">
+          Final Result
+        </h1>
 
         <div className="text-6xl font-bold mb-4">
           {score} / {questions.length}
@@ -268,10 +397,14 @@ useEffect(() => {
 
         <div
           className={`text-2xl font-bold ${
-            score >= 12 ? "text-green-600" : "text-red-600"
+            score >= 12
+              ? "text-green-600"
+              : "text-red-600"
           }`}
         >
-          {score >= 12 ? "🎉 Great Performance" : "Keep Practicing"}
+          {score >= 12
+            ? "🎉 Great Performance"
+            : "Keep Practicing"}
         </div>
 
         <p className="mt-4 text-gray-500">
@@ -281,13 +414,16 @@ useEffect(() => {
     );
   }
 
-  const question = questions[currentIndex];
+  const question =
+    questions[currentIndex];
 
   // ================= UI =================
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
 
       {/* TOP BAR */}
+
       <div className="sticky top-0 bg-white shadow p-3 flex justify-between">
         <div className="font-bold">
           👤 {userName}
@@ -297,42 +433,62 @@ useEffect(() => {
           📱 {userPhone} | 🌍 {lang}
         </div>
 
-        <div className="text-red-600 font-bold">⏱ {formattedTime}</div>
+        <div className="text-red-600 font-bold">
+          ⏱ {formattedTime}
+        </div>
       </div>
 
       {/* QUESTION */}
+
       <div className="flex-1 flex justify-center px-4 py-6 pb-20">
         <div className="w-full max-w-3xl bg-white rounded-xl shadow p-5">
 
           <h2 className="text-lg font-semibold mb-4">
-            {currentIndex + 1}. {getQuestionText(question)}
+            {currentIndex + 1}.{" "}
+            {getQuestionText(question)}
           </h2>
 
           {question.image && (
             <img
               src={question.image}
+              alt="Question"
               className="w-full max-h-[280px] object-contain mb-4 rounded"
             />
           )}
 
           <div className="space-y-3">
-            {question.options.map((option, index) => (
-              <button
-                key={option.id}
-                onClick={() => selectAnswer(question.id, option.id)}
-                className={`w-full text-left p-4 border rounded ${
-                  answers[question.id] === option.id
-                    ? "bg-blue-600 text-white"
-                    : "hover:bg-gray-100"
-                }`}
-              >
-                <b>{String.fromCharCode(65 + index)}.</b>{" "}
-                {getOptionText(option)}
-              </button>
-            ))}
+            {question.options.map(
+              (option, index) => (
+                <button
+                  key={option.id}
+                  onClick={() =>
+                    selectAnswer(
+                      question.id,
+                      option.id
+                    )
+                  }
+                  className={`w-full text-left p-4 border rounded ${
+                    answers[
+                      question.id
+                    ] === option.id
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-gray-100"
+                  }`}
+                >
+                  <b>
+                    {String.fromCharCode(
+                      65 + index
+                    )}
+                    .
+                  </b>{" "}
+                  {getOptionText(option)}
+                </button>
+              )
+            )}
           </div>
 
-          {/* NAV */}
+          {/* NAVIGATION */}
+
           <div className="flex justify-between mt-6 pt-4 border-t">
 
             <button
@@ -358,10 +514,8 @@ useEffect(() => {
             </button>
 
           </div>
-
         </div>
       </div>
-
     </div>
   );
 }

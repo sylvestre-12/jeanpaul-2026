@@ -63,9 +63,6 @@ export async function GET() {
 // ======================================================
 export async function POST(req: Request) {
   try {
-    // --------------------------------------------------
-    // READ REQUEST BODY
-    // --------------------------------------------------
     const body = await req.json();
 
     const userId = Number(body.userId);
@@ -78,9 +75,9 @@ export async function POST(req: Request) {
         : 0,
     });
 
-    // --------------------------------------------------
+    // ==================================================
     // VALIDATE USER ID
-    // --------------------------------------------------
+    // ==================================================
     if (!userId || isNaN(userId)) {
       return NextResponse.json(
         {
@@ -93,9 +90,9 @@ export async function POST(req: Request) {
       );
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // VALIDATE ANSWERS
-    // --------------------------------------------------
+    // ==================================================
     if (!Array.isArray(answers)) {
       return NextResponse.json(
         {
@@ -108,9 +105,9 @@ export async function POST(req: Request) {
       );
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // CHECK THAT USER EXISTS
-    // --------------------------------------------------
+    // ==================================================
     const user = await prisma.user.findUnique({
       where: {
         id: userId,
@@ -134,9 +131,9 @@ export async function POST(req: Request) {
       );
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // CALCULATE SCORE
-    // --------------------------------------------------
+    // ==================================================
     let score = 0;
 
     for (const answer of answers) {
@@ -180,33 +177,33 @@ export async function POST(req: Request) {
       }
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // EXAM TOTAL
-    // --------------------------------------------------
-    // Your exam is designed to contain 20 questions.
+    // ==================================================
+    // The exam is designed to contain 20 questions.
     const total = 20;
 
-    // --------------------------------------------------
+    // ==================================================
     // SAVE RESULT
-    // --------------------------------------------------
+    // ==================================================
     const result = await prisma.result.create({
       data: {
-        userId: userId,
-        score: score,
-        total: total,
+        userId,
+        score,
+        total,
       },
     });
 
     console.log("TEST RESULT CREATED:", {
       resultId: result.id,
-      userId: userId,
-      score: score,
-      total: total,
+      userId,
+      score,
+      total,
     });
 
-    // --------------------------------------------------
+    // ==================================================
     // SAVE USER ANSWERS
-    // --------------------------------------------------
+    // ==================================================
     const validAnswers = answers
       .map((answer: any) => ({
         resultId: result.id,
@@ -230,26 +227,24 @@ export async function POST(req: Request) {
       answersSaved: validAnswers.length,
     });
 
-    // --------------------------------------------------
+    // ==================================================
     // PASS / FAIL
-    // --------------------------------------------------
+    // ==================================================
     const passed = score >= 12;
     const failed = score < 12;
 
-    // --------------------------------------------------
+    // ==================================================
     // RESPONSE
-    // --------------------------------------------------
+    // ==================================================
     return NextResponse.json(
       {
         success: true,
-
         message: passed
           ? "Congratulations"
           : "Completed",
 
         score,
         total,
-
         passed,
         failed,
 

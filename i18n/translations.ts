@@ -158,31 +158,29 @@ export const translations = {
     startExamDesc: "Tangira gusubiza ibibazo",
 
     // ===== DASHBOARD =====
-    welcome: "Murakaza neza",
-    loading: "Birimo gutangizwa ba wihanganye...",
-    phone: "Telefoni",
-    dashboardMessage: "Witeguye kuzamura amanota yawe uyu munsi ",
+    // ===== DASHBOARD =====
+welcome: "Murakaza neza",
+loading: "Birimo gutangizwa...",
+phone: "Telefoni",
+dashboardMessage: "Witeguye kuzamura amanota yawe uyu munsi 🚀",
 
-    myResults: "Amanota Yanjye",
-    myResultsDesc: "Reba amanota yawe ya vuba",
+myResults: "Amanota Yanjye",
+myResultsDesc: "Reba amanota yawe ya vuba",
 
-    examHistory: "Amateka y'Ibizamini",
-    examHistoryDesc: "Reba ibizamini wakoze byose",
+examHistory: "Amateka y'Ibizamini",
+examHistoryDesc: "Reba ibizamini wakoze byose",
 
-    downloadReports: "Kuramo Raporo Y'amanota Wagiye ugira",
-    downloadReportsDesc: "Bona raporo n'amanota bya PDF",
+downloadReports: "Kuramo Raporo",
+downloadReportsDesc: "Bona raporo n'amanota bya PDF",
 
-    examSystem: "Sisitemu y'Ibizamini",
-    allRightsReserved: "Uburenganzira bwose burarinzwe",
+  // ===== NEW FEATURE: Q&A MODULE =====
+readQA: "Soma Ibibazo n'Inyishu",
+readQADesc:
+  "Reba ibibazo byawe, ibisubizo n'ibikosoye",
 
-    // ===== NEW FEATURE: Q&A MODULE =====
-    readQA: "Soma Ibibazo n'Inyishu",
-    readQADesc:
-      "Reba ibibazo byawe, ibisubizo n'ibikosoye",
-
-    // ===== RESULTS FEEDBACK =====
-    keepPracticing: "Komeza imyitozo",
-    greatPerformance: "Ukoze neza cyane",
-    redirecting: "Birimo kuguhindura...",
+// ===== RESULTS FEEDBACK =====
+keepPracticing: "Komeza imyitozo",
+greatPerformance: "Ukoze neza cyane",
+redirecting: "Birimo kuguhindura...",
   },
 };

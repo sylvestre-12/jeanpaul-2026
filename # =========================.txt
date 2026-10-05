@@ -1,0 +1,40 @@
+# =========================
+# DATABASE (NEON - PRISMA)
+# =========================
+
+DATABASE_URL="postgresql://neondb_owner:npg_L8KvFP2SsEzH@ep-small-bird-ashc52ok-pooler.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require"
+
+DIRECT_URL="postgresql://neondb_owner:npg_L8KvFP2SsEzH@ep-small-bird-ashc52ok.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require"
+
+
+# =========================
+# AUTH / SECURITY
+# =========================
+JWT_SECRET="1f378bb44518caadbcf55f750daffb7568930e31a2981b579dd9e02eea18a6c2"
+
+
+# =========================
+# EMAIL (SMTP)
+# =========================
+EMAIL_USER="120tegeri@gmail.com"
+EMAIL_PASS="yumxivdfbwokuqmk"
+
+neondb_owner:npg_L8KvFP2SsEzH
+
+pg_dump "postgresql://neondb_owner:npg_L8KvFP2SsEzH@ep-small-bird-ashc52ok.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require" -Fc -f jeanpaul-neon.backup
+
+
+
+
+
+
+model Result {
+  id        Int          @id @default(autoincrement())
+  score     Int
+  userId    Int
+  createdAt DateTime     @default(now())
+  total     Int
+  language  Language     @default(EN)
+  user      User         @relation(fields: [userId], references: [id])
+  answers   UserAnswer[]
+}

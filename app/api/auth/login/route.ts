@@ -3,8 +3,9 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 
-const ADMIN_PHONE = "0786278953";
-const ADMIN_EMAIL = "120tegeri@gmail.com";
+
+const ADMIN_PHONE = "0783249298";
+const ADMIN_EMAIL = "jeanpaulb706@gmail.com";
 
 export async function POST(req: Request) {
   try {
@@ -94,7 +95,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           error:
-            "WAIT_ADMIN_TO_APPROVE_OR_CONTACT_0786278953",
+            "WAIT_ADMIN_TO_APPROVE_OR_CONTACT_0783249298",
         },
         { status: 403 }
       );

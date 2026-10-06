@@ -37,10 +37,24 @@ export default function LoginPage() {
 
       const data = await res.json();
 
-      if (data.error) {
-        alert(data.error);
-        return;
-      }
+// =========================
+// NOT APPROVED
+// =========================
+if (
+  data.error ===
+  "WAIT_ADMIN_TO_APPROVE_OR_CONTACT_0722807435"
+) {
+  router.push("/notapprove");
+  return;
+}
+
+// =========================
+// OTHER ERRORS
+// =========================
+if (data.error) {
+  alert(data.error);
+  return;
+}
 
       await setLang(lang);
 

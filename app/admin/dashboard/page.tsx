@@ -24,7 +24,7 @@ export default function AdminDashboard() {
       title: "Users",
       desc: "Manage users and account approvals",
       icon: "👥",
-      path: "/admin/users",
+     path:"/admin/report", // path: "/admin/users",
       color: "bg-blue-600",
     },
     {

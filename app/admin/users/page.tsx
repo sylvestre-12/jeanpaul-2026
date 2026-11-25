@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+
 type User = {
   id: number;
   name: string | null;
@@ -10,6 +11,14 @@ type User = {
   approved: boolean;
   createdAt: string;
 };
+// =========================
+// 20 DAYS COUNTDOWN
+// =========================
+
+const [remainingTime, setRemainingTime] = useState<number | null>(null);
+
+const COUNTDOWN_KEY = "admin-system-expiration";
+const TOTAL_TIME = 20 * 24 * 60 * 60 * 1000;
 
 export default function AdminUsersPage() {
 
@@ -92,7 +101,37 @@ export default function AdminUsersPage() {
       console.error(error);
     }
   }
+// =========================
+// COUNTDOWN LOGIC
+// =========================
 
+useEffect(() => {
+  let expirationTime: number;
+
+  const savedTime = localStorage.getItem(COUNTDOWN_KEY);
+
+  if (savedTime) {
+    expirationTime = Number(savedTime);
+  } else {
+    expirationTime = Date.now() + TOTAL_TIME;
+
+    localStorage.setItem(
+      COUNTDOWN_KEY,
+      expirationTime.toString()
+    );
+  }
+
+  function updateCountdown() {
+    const remaining = Math.max(0, expirationTime - Date.now());
+    setRemainingTime(remaining);
+  }
+
+  updateCountdown();
+
+  const interval = setInterval(updateCountdown, 1000);
+
+  return () => clearInterval(interval);
+}, []);
   // =========================
   // DELETE USER
   // =========================
@@ -499,6 +538,79 @@ export default function AdminUsersPage() {
         </div>
 
       )}
+      {/* ========================= */}
+{/* FIXED 20 DAYS COUNTER */}
+{/* ========================= */}
+
+{remainingTime !== null && (
+  <div className="fixed right-5 top-1/2 -translate-y-1/2 z-[9999] bg-gray-950 text-white border border-red-500 shadow-2xl rounded-2xl p-5 w-64">
+
+    <div className="flex items-center gap-2 mb-3">
+      <span className="text-2xl">⚠️</span>
+
+      <h2 className="font-bold text-red-400">
+        System Countdown
+      </h2>
+    </div>
+
+    <p className="text-sm text-gray-300 mb-4">
+      This system will disappear in
+    </p>
+
+    {remainingTime > 0 ? (
+      <div className="grid grid-cols-4 gap-2 text-center">
+
+        {/* DAYS */}
+        <div className="bg-gray-800 p-2 rounded-lg">
+          <div className="text-xl font-bold">
+            {Math.floor(remainingTime / (1000 * 60 * 60 * 24))}
+          </div>
+          <div className="text-xs text-gray-400">Days</div>
+        </div>
+
+        {/* HOURS */}
+        <div className="bg-gray-800 p-2 rounded-lg">
+          <div className="text-xl font-bold">
+            {Math.floor((remainingTime / (1000 * 60 * 60)) % 24)
+              .toString()
+              .padStart(2, "0")}
+          </div>
+          <div className="text-xs text-gray-400">Hours</div>
+        </div>
+
+        {/* MINUTES */}
+        <div className="bg-gray-800 p-2 rounded-lg">
+          <div className="text-xl font-bold">
+            {Math.floor((remainingTime / (1000 * 60)) % 60)
+              .toString()
+              .padStart(2, "0")}
+          </div>
+          <div className="text-xs text-gray-400">Min</div>
+        </div>
+
+        {/* SECONDS */}
+        <div className="bg-gray-800 p-2 rounded-lg">
+          <div className="text-xl font-bold">
+            {Math.floor((remainingTime / 1000) % 60)
+              .toString()
+              .padStart(2, "0")}
+          </div>
+          <div className="text-xs text-gray-400">Sec</div>
+        </div>
+
+      </div>
+    ) : (
+      <div className="text-red-500 font-bold text-xl">
+        Time expired
+      </div>
+    )}
+
+    <div className="mt-4 border-t border-gray-700 pt-3 text-xs text-gray-400">
+      Remaining system lifetime
+    </div>
+
+  </div>
+)}
 
     </div>
   );

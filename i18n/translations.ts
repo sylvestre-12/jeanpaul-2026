@@ -177,15 +177,15 @@ RW: {
 
   examSystem: "Sisitemu y'Ibizamini",
   allRightsReserved:
-    "Uburenganzira bwose burarinzwe",
+    "Uburenganzira bwose bifite umutekano",
 
   // ===== NEW FEATURE: Q&A MODULE =====
-  readQA: "Soma Ibibazo n'Inyishu",
+  readQA: "Soma Ibibazo n'Ibisubizo",
   readQADesc:
     "Reba ibibazo byawe, ibisubizo n'ibikosoye",
 
   // ===== RESULTS FEEDBACK =====
   keepPracticing: "Komeza imyitozo",
   greatPerformance: "Ukoze neza cyane",
-  redirecting: "Birimo kuguhindura...",
+  redirecting: "Birimo Kugenda Biza...",
 }}
